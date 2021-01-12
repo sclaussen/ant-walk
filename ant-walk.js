@@ -33,16 +33,16 @@ function main() {
     // traverse to.  The subsequent transitions will all be handled
     // using recursion within the traverse function.
     for (let target of graph.BEG) {
-        let path = traverse(target, graph[target], [ target ]);
+        traverse(graph[target], [ target ]);
     }
 
-    // Print out all the possible solutions
+    // Print out all the possible solutions (with a counter)
     for (let i in solutions) {
         console.log(parseInt(i) + 1 + ': ' + solutions[i]);
     }
 }
 
-function traverse(currentNode, targetNodes, traversedNodes) {
+function traverse(targetNodes, traversedNodes) {
 
     for (let targetNode of targetNodes) {
 
@@ -63,10 +63,10 @@ function traverse(currentNode, targetNodes, traversedNodes) {
         // 1. Create a copy of the traversed nodes
         // 2. Add the target node to the new traversed nodes array
         // 3. Make a recurive call to traverse, pass the new target
-        //    node as the source, its target nodes, and the copy of
-        //    the traversed nodes
+        //    node's set of target nodes that it can walk to, and the
+        //    copy of the traversed nodes
         let traversedNodesCopy = JSON.parse(JSON.stringify(traversedNodes));
         traversedNodesCopy.push(targetNode);
-        traverse(targetNode, graph[targetNode], traversedNodesCopy);
+        traverse(graph[targetNode], traversedNodesCopy);
     }
 }
