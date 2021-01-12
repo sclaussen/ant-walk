@@ -60,11 +60,12 @@ function traverse(targetNodes, traversedNodes) {
         }
 
         // In this situation, the target node is a valid option, so...
-        // 1. Create a copy of the traversed nodes
+        // 1. Create a copy of the traversed nodes (representing a
+        //    potentially new partial solution)
         // 2. Add the target node to the new traversed nodes array
-        // 3. Make a recurive call to traverse, pass the new target
-        //    node's set of target nodes that it can walk to, and the
-        //    copy of the traversed nodes
+        // 3. Make a recurive call to traverse, pass the new set of
+        //    target nodes to consider walking, and the copy of the
+        //    traversed nodes (including the new node we just added)
         let traversedNodesCopy = JSON.parse(JSON.stringify(traversedNodes));
         traversedNodesCopy.push(targetNode);
         traverse(graph[targetNode], traversedNodesCopy);
