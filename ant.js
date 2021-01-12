@@ -1,8 +1,10 @@
 'use strict'
 
-
-var solutions = [];
-var transitions = {
+// This is a simple data structure for the graph.  Each node in the
+// graph has a name (eg BEG, 1, 2, ...).  Each node is then followed
+// by an array of nodes that it can walk to (eg the BEG node can walk
+// to the nodes 1 or 2, node 1 can walk to node 3, et al).
+var graph = {
     'BEG': [ 1, 2 ],
     1: [ 3 ],
     2: [ 4 ],
@@ -18,40 +20,52 @@ var transitions = {
     12: [ 'END' ],
 };
 
+// Solutions contains all the possible ways to traverse the graph
+var solutions = [];
 
 main();
 
-
 function main() {
-    console.log(transitions);
+    console.log(graph);
 
-    for (let target of transitions.BEG) {
-        let path = walk(target, transitions[target], [ target ]);
+    // Start walking the graph using the nodes that the BEG node can
+    // traverse to.  The subsequent transitions will all be handled
+    // using recursion within the traverse function.
+    for (let target of graph.BEG) {
+        let path = traverse(target, graph[target], [ target ]);
     }
 
+    // Print out all the possible solutions
     for (let i in solutions) {
         console.log(parseInt(i) + 1 + ': ' + solutions[i]);
     }
 }
 
+function traverse(currentNode, targetNodes, traversedNodes) {
 
-function walk(source, targets, path) {
+    for (let targetNode of targetNodes) {
 
-    for (let target of targets) {
-
-        // Found a solution
-        if (target === 'END') {
-            solutions.push(path);
+        // The next node is the goal node, so the current set of
+        // traversedNodes represents a valid traversal path
+        if (targetNode === 'END') {
+            solutions.push(traversedNodes);
             return;
         }
 
-        // Don't hit a node twice
-        if (path.includes(target)) {
+        // This isn't a valid path because we cannot visit a node
+        // twice
+        if (traversedNodes.includes(targetNode)) {
             continue;
         }
 
-        let newPath = JSON.parse(JSON.stringify(path));
-        newPath.push(target);
-        walk(target, transitions[target], newPath);
+        // In this situation, the target node is a valid option, so...
+        // 1. Create a copy of the traversed nodes
+        // 2. Add the target node to the new traversed nodes array
+        // 3. Make a recurive call to traverse, pass the new target
+        //    node as the source, its target nodes, and the copy of
+        //    the traversed nodes
+        let traversedNodesCopy = JSON.parse(JSON.stringify(traversedNodes));
+        traversedNodesCopy.push(targetNode);
+        traverse(targetNode, graph[targetNode], traversedNodesCopy);
     }
 }
